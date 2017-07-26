@@ -2,6 +2,8 @@
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
 <!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
 <!ENTITY RFC8030 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8030.xml">
+<!ENTITY RFC6238 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6238.xml">
+<!ENTITY RFC4226 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4226.xml">
 ]>
 <?xml-stylesheet type="text/xsl" href="rfc2629.xslt" ?> <!-- used by XSLT processors -->
 <!-- OPTIONS, known as processing instructions (PIs) go here. -->
@@ -65,8 +67,53 @@ this document are to be interpreted as described in
 This document is being discussed on the xyz@example.org mailing list.
 </t>
 <t>
-Add some text here. You will need to use these references somewhere within the text:
-<xref target="RFC8030"/>
+Passwords have for some time been known to the security community to
+be insufficient for authenticating users. Passwords are vulnerable to
+brute-force attacks unless servers properly implement rate limiting,
+which can be difficult to do correctly. Unless required to choose
+otherwise, users also tend to pick easily guessed passwords or even
+trivial passwords such as the literal word "password". Moreover, these
+problems are worsened by the fact that users tend to reuse passwords
+across sites which means that if one site improperly stores passwords
+and gets compromised, the attacker is likely to now have valid
+credentials to other, higher-profile sites.
+</t>
+<t>
+To provide more security in addition to passwords, many systems have
+introduced two-factor authentication schemes. Two-factor
+authentication systems, sometimes referred to as "second-factor
+authentication", require that the user not only prove that they
+<spanx>know something</spanx> (i.e. a password), but also that they
+<spanx>possess</spanx> something (e.g. a mobile device).
+</t>
+<t>
+Two-factor authentication has historically been implemented using 3 methods:
+<list style="numbers">
+  <t>HOTP, as specified in <xref target="RFC4226"/></t>
+  <t>TOTP, as specified in <xref target="RFC6238"/></t>
+  <t>Authentication codes sent over SMS or sometimes email</t>
+</list>
+All of these systems require the user to manually open an app to
+provide an authentication code which is error-prone and inconvenient,
+making it harder to encourage two-factor authentication. Note also
+that SMS-based systems are not <spanx>true</spanx> two-factor
+authentication, as they prove that the user can <spanx>receive some
+information</spanx>, not that they possess the device that information
+would ordinarily go to - making these systems vulnerable to additional
+attacks.
+</t>
+<t>
+This situation can be improved by utilizing <xref
+target="RFC8030"/>. In such a model, the user is not required to
+retrieve anything; instead, the device that is to be proved to be in
+their possession receives a push message that proactively prompts the
+user to confirm a login attempt. If the user confirms the legitimacy
+of the login, the device submits a cryptographically signed response
+to the server affirming the result. This has an additional useful
+property in that a server compromise does not lead to the user's
+credentials being leaked as it does in TOTP-based systems, since the
+server is only required to store the public component of the keypair
+on the user's device.
 </t>
 </section>
 <section anchor="Acknowledgements" title="Acknowledgements">
@@ -80,6 +127,10 @@ Add some text here. You will need to use these references somewhere within the t
 <references title="Normative References">
 &RFC2119;
 &RFC8030;
+</references>
+<references title="Informative References">
+&RFC6238;
+&RFC4226;
 </references>
 </back>
 </rfc>
