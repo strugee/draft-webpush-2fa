@@ -1,0 +1,224 @@
+
+
+
+
+Network Working Group                                         AJ. Jordan
+Internet-Draft                                             July 26, 2017
+Intended status: Standards Track
+Expires: January 27, 2018
+
+
+                  Push-based Two-factor Authentication
+              draft-jordan-webpush-two-factor-auth-latest
+
+Abstract
+
+   This document defines a protocol to challenge a user to prove that
+   they have a device in their possession (i.e. provide second-factor
+   authentication).  This scheme builds upon WebPush.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on January 27, 2018.
+
+Copyright Notice
+
+   Copyright (c) 2017 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+
+
+
+
+Jordan                  Expires January 27, 2018                [Page 1]
+
+Internet-Draft                 WebPush 2FA                     July 2017
+
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+   2.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   3
+   3.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   3
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   3
+   5.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   3
+     5.1.  Normative References  . . . . . . . . . . . . . . . . . .   3
+     5.2.  Informative References  . . . . . . . . . . . . . . . . .   3
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   4
+
+1.  Introduction
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in [RFC2119].
+
+   This document is being discussed on the xyz@example.org mailing list.
+
+   Passwords have for some time been known to the security community to
+   be insufficient for authenticating users.  Passwords are vulnerable
+   to brute-force attacks unless servers properly implement rate
+   limiting, which can be difficult to do correctly.  Unless required to
+   choose otherwise, users also tend to pick easily guessed passwords or
+   even trivial passwords such as the literal word "password".
+   Moreover, these problems are worsened by the fact that users tend to
+   reuse passwords across sites which means that if one site improperly
+   stores passwords and gets compromised, the attacker is likely to now
+   have valid credentials to other, higher-profile sites.
+
+   To provide more security in addition to passwords, many systems have
+   introduced two-factor authentication schemes.  Two-factor
+   authentication systems, sometimes referred to as "second-factor
+   authentication", require that the user not only prove that they _know
+   something_ (i.e. a password), but also that they _possess_ something
+   (e.g. a mobile device).
+
+   Two-factor authentication has historically been implemented using 3
+   methods:
+
+   1.  HOTP, as specified in [RFC4226]
+
+   2.  TOTP, as specified in [RFC6238]
+
+   3.  Authentication codes sent over SMS or sometimes email
+
+   All of these systems require the user to manually open an app to
+   provide an authentication code which is error-prone and inconvenient,
+
+
+
+Jordan                  Expires January 27, 2018                [Page 2]
+
+Internet-Draft                 WebPush 2FA                     July 2017
+
+
+   making it harder to encourage two-factor authentication.  Note also
+   that SMS-based systems are not _true_ two-factor authentication, as
+   they prove that the user can _receive some information_, not that
+   they possess the device that information would ordinarily go to -
+   making these systems vulnerable to additional attacks.
+
+   This situation can be improved by utilizing [RFC8030].  In such a
+   model, the user is not required to retrieve anything; instead, the
+   device that is to be proved to be in their possession receives a push
+   message that proactively prompts the user to confirm a login attempt.
+   If the user confirms the legitimacy of the login, the device submits
+   a cryptographically signed response to the server affirming the
+   result.  This has an additional useful property in that a server
+   compromise does not lead to the user's credentials being leaked as it
+   does in TOTP-based systems, since the server is only required to
+   store the public component of the keypair on the user's device.
+
+2.  Acknowledgements
+
+3.  IANA Considerations
+
+4.  Security Considerations
+
+5.  References
+
+5.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <http://www.rfc-editor.org/info/rfc2119>.
+
+   [RFC8030]  Thomson, M., Damaggio, E., and B. Raymor, Ed., "Generic
+              Event Delivery Using HTTP Push", RFC 8030,
+              DOI 10.17487/RFC8030, December 2016,
+              <http://www.rfc-editor.org/info/rfc8030>.
+
+5.2.  Informative References
+
+   [RFC4226]  M'Raihi, D., Bellare, M., Hoornaert, F., Naccache, D., and
+              O. Ranen, "HOTP: An HMAC-Based One-Time Password
+              Algorithm", RFC 4226, DOI 10.17487/RFC4226, December 2005,
+              <http://www.rfc-editor.org/info/rfc4226>.
+
+   [RFC6238]  M'Raihi, D., Machani, S., Pei, M., and J. Rydell, "TOTP:
+              Time-Based One-Time Password Algorithm", RFC 6238,
+              DOI 10.17487/RFC6238, May 2011,
+              <http://www.rfc-editor.org/info/rfc6238>.
+
+
+
+Jordan                  Expires January 27, 2018                [Page 3]
+
+Internet-Draft                 WebPush 2FA                     July 2017
+
+
+Author's Address
+
+   AJ Jordan
+   Seattle, WA  98122
+   United States
+
+   Email: alex@strugee.net
+   URI:   https://strugee.net
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Jordan                  Expires January 27, 2018                [Page 4]

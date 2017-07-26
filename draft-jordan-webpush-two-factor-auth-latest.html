@@ -1,0 +1,449 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head profile="http://www.w3.org/2006/03/hcard http://dublincore.org/documents/2008/08/04/dc-html/">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+
+  <title>Push-based Two-factor Authentication</title>
+
+  
+<style type="text/css">/*<![CDATA[*/
+@viewport {
+  zoom: 1.0;
+  width: extend-to-zoom;
+}
+@-ms-viewport {
+  width: extend-to-zoom;
+  zoom: 1.0;
+}
+
+@media screen and (min-width: 1024px) {
+  ul.toc, #rfc\.toc {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    right: calc(50vw - 525px);
+    width: 300px;
+    z-index: 1;
+  }
+  #rfc\.toc {
+    top: 15px;
+  }
+  ul.toc {
+    top: 80px;
+    overflow: auto;
+  }
+
+  body {
+    padding-right: 350px;
+  }
+}
+
+body {
+  font: 15px "Helvetica Neue",Helvetica,Arial,sans-serif;
+  color: #333;
+  font-size-adjust: 0.5;
+  line-height: 130%;
+  margin: 25px auto;
+  max-width: 724px;
+}
+
+.title, .filename, h1, h2, h3, h4 {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size-adjust: 0.5;
+  font-weight: 500;
+  color: #333;
+  line-height: 100%;
+  margin: 0.8em 0 0.3em;
+}
+.title { font-size: 36px; }
+h1 { font-size: 30px; }
+h2 { font-size: 24px; }
+h3, h4 { font-size: 18px; }
+h1 a[href], h2 a[href], h3 a[href], h4 a[href] {
+  color: #333;
+}
+
+ul.toc li {
+  list-style: none;
+  text-indent: -2.5em;
+  padding-left: 2.5em;
+  padding-bottom: 5px;
+  margin: 0;
+}
+ul.toc ul {
+  margin: 0;
+}
+/* xml2rfc nests ul directly inside ul which messes with the style badly */
+ul.toc, ul.toc>ul, ul.toc ul>ul {
+  margin: 0 0 0 1.5em;
+}
+
+table {
+  margin-left: 0em;
+  border-collapse: collapse;
+}
+th {
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
+td {
+  border-top: 1px solid #ddd;
+  vertical-align: top;
+}
+tr:nth-child(2n+1) > td,
+tr:nth-child(2n+1) > th {
+  background-color: #f9f9f9;
+}
+td.reference {
+  max-width: 200px;
+  border-top: none;
+  padding-right: 1em;
+}
+.right {
+  text-align: right;
+}
+
+
+table.header {
+  width: 100%;
+}
+table.header td {
+  border: none;
+  background-color: transparent;
+  color: black;
+}
+.filename {
+  color: rgb(119, 119, 119);
+  font-size: 23px;
+  font-weight: normal;
+  height: auto;
+  line-height: 100%;
+}
+#rfc\.abstract+p {
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 130%;
+}
+
+samp, tt, code, pre {
+  font: 11pt consolas, monospace;
+  font-size-adjust: none;
+}
+pre {
+  background-color: #eee;
+  border: 1px solid #ddd;
+  overflow-x: auto;
+  padding: 5px;
+  margin: 5px;
+}
+.figure {
+  font-style: italic;
+  margin: 0 1.5em;
+}
+
+address {
+  margin: 10px 0 0;
+}
+.vcard {
+  font-style: normal;
+}
+.vcardline {
+  display: block;
+}
+.vcardline .fn {
+  font-weight: bold;
+}
+.vcardline .hidden {
+  display: none;
+}
+
+dl {
+  margin-left: 1em;
+}
+dl.dl-horizontal: {
+  margin-left: 0;
+}
+dl > dt {
+  float: left;
+  margin-right: 1em;
+}
+dl.nohang > dt {
+  float: none;
+}
+dl > dd {
+  margin-bottom: .5em;
+}
+dl.compact > dd {
+  margin-bottom: 0em;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
+  margin-bottom: 0em;
+}
+ul.empty {
+  list-style-type: none;
+}
+ul.empty li {
+  margin-top: .5em;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #eee;
+}
+
+a {
+  text-decoration: none;
+}
+a[href] {
+  color: #2a6496;
+}
+a[href]:hover {
+  background-color: #eee;
+}
+
+ol, ul, li, p {
+  padding: 0;
+  margin: 0.5em 0 0.5em 2em;
+}
+li, p {
+  margin-left: 0;
+}
+address {
+  font-style: normal;
+}
+
+.github-fork-ribbon-wrapper {
+  display: none;
+}
+@media screen and (min-width: 800px) {
+  /* "Fork me on GitHub" CSS ribbon based on
+   * https://github.com/simonwhitaker/github-fork-ribbon-css
+   */
+  .github-fork-ribbon {
+    position: absolute;
+    padding: 2px 0;
+    background-color: #a00;
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.5);
+    font: 700 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+    pointer-events: auto;
+
+    top: 38px;
+    right: -45px;
+
+    transform: rotate(45deg);
+  }
+
+  .github-fork-ribbon a[href],
+  .github-fork-ribbon a[href]:hover {
+    color: #fff;
+    background-color: transparent;
+    text-decoration: none;
+    text-shadow: 0 -1px rgba(0, 0, 0, 0.5);
+    text-align: center;
+
+    width: 190px;
+    line-height: 18px;
+
+    display: inline-block;
+    padding: 2px 0;
+
+    border: 1.5px dotted #fff;
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+
+  .github-fork-ribbon-wrapper {
+    display: block;
+    width: 130px;
+    height: 130px;
+    position: absolute;
+    overflow: hidden;
+    top: 0; right: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+}
+@media screen and (min-width: 1000px) {
+  .github-fork-ribbon-wrapper {
+    position: fixed;
+  }
+  /*]]>*/</style>
+
+
+  <link href="#rfc.toc" rel="Contents">
+<link href="#rfc.section.1" rel="Chapter" title="1 Introduction">
+<link href="#rfc.section.2" rel="Chapter" title="2 Acknowledgements">
+<link href="#rfc.section.3" rel="Chapter" title="3 IANA Considerations">
+<link href="#rfc.section.4" rel="Chapter" title="4 Security Considerations">
+<link href="#rfc.references" rel="Chapter" title="5 References">
+<link href="#rfc.references.1" rel="Chapter" title="5.1 Normative References">
+<link href="#rfc.references.2" rel="Chapter" title="5.2 Informative References">
+<link href="#rfc.authors" rel="Chapter">
+
+
+  <meta name="generator" content="xml2rfc version 2.7.0 - http://tools.ietf.org/tools/xml2rfc" />
+  <link rel="schema.dct" href="http://purl.org/dc/terms/" />
+
+  <meta name="dct.creator" content="Jordan, AJ." />
+  <meta name="dct.identifier" content="urn:ietf:id:draft-jordan-webpush-two-factor-auth-latest" />
+  <meta name="dct.issued" scheme="ISO8601" content="2017-7-26" />
+  <meta name="dct.abstract" content="This document defines a protocol to challenge a user to prove that they have a device in their possession (i.e. provide second-factor authentication). This scheme builds upon WebPush." />
+  <meta name="description" content="This document defines a protocol to challenge a user to prove that they have a device in their possession (i.e. provide second-factor authentication). This scheme builds upon WebPush." />
+
+</head>
+
+<body>
+
+  <table class="header">
+    <tbody>
+    
+    	<tr>
+<td class="left">Network Working Group</td>
+<td class="right">AJ. Jordan</td>
+</tr>
+<tr>
+<td class="left">Internet-Draft</td>
+<td class="right">July 26, 2017</td>
+</tr>
+<tr>
+<td class="left">Intended status: Standards Track</td>
+<td class="right"></td>
+</tr>
+<tr>
+<td class="left">Expires: January 27, 2018</td>
+<td class="right"></td>
+</tr>
+
+    	
+    </tbody>
+  </table>
+
+  <p class="title">Push-based Two-factor Authentication<br />
+  <span class="filename">draft-jordan-webpush-two-factor-auth-latest</span></p>
+  
+  <h1 id="rfc.abstract"><a href="#rfc.abstract">Abstract</a></h1>
+<p>This document defines a protocol to challenge a user to prove that they have a device in their possession (i.e. provide second-factor authentication). This scheme builds upon WebPush.</p>
+<h1 id="rfc.status"><a href="#rfc.status">Status of This Memo</a></h1>
+<p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
+<p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
+<p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
+<p>This Internet-Draft will expire on January 27, 2018.</p>
+<h1 id="rfc.copyrightnotice"><a href="#rfc.copyrightnotice">Copyright Notice</a></h1>
+<p>Copyright (c) 2017 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
+<p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document.  Please review these documents carefully, as they describe your rights and restrictions with respect to this document.  Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p>
+
+  
+  <hr class="noprint" />
+  <h1 class="np" id="rfc.toc"><a href="#rfc.toc">Table of Contents</a></h1>
+  <ul class="toc">
+
+  	<li>1.   <a href="#rfc.section.1">Introduction</a>
+</li>
+<li>2.   <a href="#rfc.section.2">Acknowledgements</a>
+</li>
+<li>3.   <a href="#rfc.section.3">IANA Considerations</a>
+</li>
+<li>4.   <a href="#rfc.section.4">Security Considerations</a>
+</li>
+<li>5.   <a href="#rfc.references">References</a>
+</li>
+<ul><li>5.1.   <a href="#rfc.references.1">Normative References</a>
+</li>
+<li>5.2.   <a href="#rfc.references.2">Informative References</a>
+</li>
+</ul><li><a href="#rfc.authors">Author's Address</a>
+</li>
+
+
+  </ul>
+
+  <h1 id="rfc.section.1">
+<a href="#rfc.section.1">1.</a> Introduction</h1>
+<p id="rfc.section.1.p.1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <a href="#RFC2119" class="xref">[RFC2119]</a>.  </p>
+<p id="rfc.section.1.p.2">This document is being discussed on the xyz@example.org mailing list.  </p>
+<p id="rfc.section.1.p.3">Passwords have for some time been known to the security community to be insufficient for authenticating users. Passwords are vulnerable to brute-force attacks unless servers properly implement rate limiting, which can be difficult to do correctly. Unless required to choose otherwise, users also tend to pick easily guessed passwords or even trivial passwords such as the literal word "password". Moreover, these problems are worsened by the fact that users tend to reuse passwords across sites which means that if one site improperly stores passwords and gets compromised, the attacker is likely to now have valid credentials to other, higher-profile sites.  </p>
+<p id="rfc.section.1.p.4">To provide more security in addition to passwords, many systems have introduced two-factor authentication schemes. Two-factor authentication systems, sometimes referred to as "second-factor authentication", require that the user not only prove that they <em>know something</em> (i.e. a password), but also that they <em>possess</em> something (e.g. a mobile device).  </p>
+<p id="rfc.section.1.p.5">Two-factor authentication has historically been implemented using 3 methods: <em>true</em> two-factor authentication, as they prove that the user can <em>receive some information</em>, not that they possess the device that information would ordinarily go to - making these systems vulnerable to additional attacks.  </p>
+
+<ol>
+<li>HOTP, as specified in <a href="#RFC4226" class="xref">[RFC4226]</a>
+</li>
+<li>TOTP, as specified in <a href="#RFC6238" class="xref">[RFC6238]</a>
+</li>
+<li>Authentication codes sent over SMS or sometimes email</li>
+</ol>
+
+<p> All of these systems require the user to manually open an app to provide an authentication code which is error-prone and inconvenient, making it harder to encourage two-factor authentication. Note also that SMS-based systems are not </p>
+<p id="rfc.section.1.p.6">This situation can be improved by utilizing <a href="#RFC8030" class="xref">[RFC8030]</a>. In such a model, the user is not required to retrieve anything; instead, the device that is to be proved to be in their possession receives a push message that proactively prompts the user to confirm a login attempt. If the user confirms the legitimacy of the login, the device submits a cryptographically signed response to the server affirming the result. This has an additional useful property in that a server compromise does not lead to the user's credentials being leaked as it does in TOTP-based systems, since the server is only required to store the public component of the keypair on the user's device.  </p>
+<h1 id="rfc.section.2">
+<a href="#rfc.section.2">2.</a> <a href="#Acknowledgements" id="Acknowledgements">Acknowledgements</a>
+</h1>
+<h1 id="rfc.section.3">
+<a href="#rfc.section.3">3.</a> <a href="#IANA" id="IANA">IANA Considerations</a>
+</h1>
+<h1 id="rfc.section.4">
+<a href="#rfc.section.4">4.</a> <a href="#Security" id="Security">Security Considerations</a>
+</h1>
+<h1 id="rfc.references">
+<a href="#rfc.references">5.</a> References</h1>
+<h1 id="rfc.references.1">
+<a href="#rfc.references.1">5.1.</a> Normative References</h1>
+<table><tbody>
+<tr>
+<td class="reference"><b id="RFC2119">[RFC2119]</b></td>
+<td class="top">
+<a>Bradner, S.</a>, "<a href="http://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC8030">[RFC8030]</b></td>
+<td class="top">
+<a>Thomson, M.</a>, <a>Damaggio, E.</a> and <a>B. Raymor</a>, "<a href="http://tools.ietf.org/html/rfc8030">Generic Event Delivery Using HTTP Push</a>", RFC 8030, DOI 10.17487/RFC8030, December 2016.</td>
+</tr>
+</tbody></table>
+<h1 id="rfc.references.2">
+<a href="#rfc.references.2">5.2.</a> Informative References</h1>
+<table><tbody>
+<tr>
+<td class="reference"><b id="RFC4226">[RFC4226]</b></td>
+<td class="top">
+<a>M'Raihi, D.</a>, <a>Bellare, M.</a>, <a>Hoornaert, F.</a>, <a>Naccache, D.</a> and <a>O. Ranen</a>, "<a href="http://tools.ietf.org/html/rfc4226">HOTP: An HMAC-Based One-Time Password Algorithm</a>", RFC 4226, DOI 10.17487/RFC4226, December 2005.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC6238">[RFC6238]</b></td>
+<td class="top">
+<a>M'Raihi, D.</a>, <a>Machani, S.</a>, <a>Pei, M.</a> and <a>J. Rydell</a>, "<a href="http://tools.ietf.org/html/rfc6238">TOTP: Time-Based One-Time Password Algorithm</a>", RFC 6238, DOI 10.17487/RFC6238, May 2011.</td>
+</tr>
+</tbody></table>
+<h1 id="rfc.authors"><a href="#rfc.authors">Author's Address</a></h1>
+<div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">AJ Jordan</span> 
+	  <span class="n hidden">
+		<span class="family-name">Jordan</span>
+	  </span>
+	</span>
+	<span class="org vcardline"></span>
+	<span class="adr">
+	  
+	  <span class="vcardline">
+		<span class="locality">Seattle</span>,  
+		<span class="region">WA</span> 
+		<span class="code">98122</span>
+	  </span>
+	  <span class="country-name vcardline">United States</span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:alex@strugee.net">alex@strugee.net</a></span>
+
+<span class="vcardline">URI: <a href="https://strugee.net">https://strugee.net</a></span>
+
+  </address>
+</div>
+
+  <div class="github-fork-ribbon-wrapper"><div class="github-fork-ribbon"><a href="https://github.com/strugee/draft-webpush-2fa">Fork me on GitHub</a></div></div>
+</body>
+</html>
